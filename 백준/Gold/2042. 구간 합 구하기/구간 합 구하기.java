@@ -1,62 +1,76 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.StringTokenizer;
 
 public class Main {
+    static void init(long[] tmp, long[] tree, int node, int start, int end) {
+        if (start == end) tree[node] = tmp[start];
+        else {
+            init(tmp, tree, node*2, start, (start+end)/2);
+            init(tmp, tree, node*2+1, (start+end)/2+1, end);
+            tree[node] = tree[node*2] + tree[node*2+1];
+        }
+    }
+
+    static void update(long[] tmp, long[] tree, int node, int start, int end, int idx, long val) {
+        if (idx < start || idx > end) return;
+
+        if(start == end) {
+            tmp[idx] = val;
+            tree[node] = val;
+            return;
+        }
+        update(tmp, tree, node*2, start, (start+end)/2, idx, val);
+        update(tmp, tree, node*2+1, (start+end)/2+1, end, idx, val);
+        tree[node] = tree[node*2] + tree[node*2+1];
+    }
+
+    static long query(long[] tree, int node, int start, int end, int left, int right) {
+        if (left > end || right < start) return 0;
+
+        if (left <= start && end <= right) {
+            return tree[node];
+        }
+
+        long lsum = query(tree, node*2, start, (start+end)/2, left, right);
+        long rsum = query(tree, node*2+1, (start+end)/2+1, end, left, right);
+
+        return lsum+rsum;
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
+        M += K;
 
-        int k = 0;
-        while ((1 << k) <= N) {
+        long[] tmp = new long[N];
+        for(int i=0; i<N; i++) {
+            tmp[i] = Long.parseLong(br.readLine());
+        }
+
+        int k= 0;
+        while((1<<k) <= N) {
             k++;
         }
-        long[] tree = new long[(1 << k) * 2];  // 배열을 long 타입으로 변경
+        long[] tree = new long[(1<<k)*2];
+        init(tmp, tree, 1,0, N-1);
 
-        // 트리 초기화
-        for (int i = (1 << k); i < (1 << k) + N; i++) {
-            tree[i] = Long.parseLong(br.readLine().trim());  // 입력값을 long 타입으로 처리
-        }
-
-        // 내부 노드 채우기
-        for (int i = (1 << k) - 1; i > 0; i--) {
-            tree[i] = tree[i * 2] + tree[i * 2 + 1];
-        }
-
-        // 질의 및 업데이트 처리
-        for (int i = 0; i < M + K; i++) {
+        while(M-- > 0) {
             st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            long c = Long.parseLong(st.nextToken());  // c를 long 타입으로 처리
-
-            if (a == 1) {
-                int idx = (1 << k) + b - 1;
-                long value = c - tree[idx];
-                tree[idx] = c;
-
-                while (idx > 1) {
-                    idx /= 2;
-                    tree[idx] += value;
-                }
+            int what = Integer.parseInt(st.nextToken());
+            if(what==1) {
+                int index = Integer.parseInt(st.nextToken());
+                long val = Long.parseLong(st.nextToken());
+                update(tmp, tree, 1, 0, N-1, index-1, val);
             } else {
-                long sum = 0;
-                int si = (1 << k) + b - 1;
-                int ei = (1 << k) + (int) c - 1;
-
-                while (si <= ei) {
-                    if (si % 2 == 1) sum += tree[si++];
-                    if (ei % 2 == 0) sum += tree[ei--];
-                    si /= 2;
-                    ei /= 2;
-                }
-
-                System.out.println(sum);
+                int left = Integer.parseInt(st.nextToken());
+                int right = Integer.parseInt(st.nextToken());
+                bw.write(query(tree, 1, 0, N-1, left-1, right-1)+"\n");
             }
         }
+        bw.flush();
     }
 }
