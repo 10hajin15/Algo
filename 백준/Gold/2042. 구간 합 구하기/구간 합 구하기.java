@@ -1,76 +1,66 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class Main {
-    static void init(long[] tmp, long[] tree, int node, int start, int end) {
-        if (start == end) tree[node] = tmp[start];
-        else {
-            init(tmp, tree, node*2, start, (start+end)/2);
-            init(tmp, tree, node*2+1, (start+end)/2+1, end);
-            tree[node] = tree[node*2] + tree[node*2+1];
+    static long[] tree;
+    static long[] arr;
+    static int n, m, k;
+
+    static long prefixSum(int i) {
+        long result = 0;
+        while (i>0) {
+            result += tree[i];
+            i -= (i&-i);
+        }
+        return result;
+    }
+
+    static void update(int i, long dif) {
+        while (i<=n) {
+            tree[i] += dif;
+            i += (i&-i);
         }
     }
 
-    static void update(long[] tmp, long[] tree, int node, int start, int end, int idx, long val) {
-        if (idx < start || idx > end) return;
-
-        if(start == end) {
-            tmp[idx] = val;
-            tree[node] = val;
-            return;
-        }
-        update(tmp, tree, node*2, start, (start+end)/2, idx, val);
-        update(tmp, tree, node*2+1, (start+end)/2+1, end, idx, val);
-        tree[node] = tree[node*2] + tree[node*2+1];
-    }
-
-    static long query(long[] tree, int node, int start, int end, int left, int right) {
-        if (left > end || right < start) return 0;
-
-        if (left <= start && end <= right) {
-            return tree[node];
-        }
-
-        long lsum = query(tree, node*2, start, (start+end)/2, left, right);
-        long rsum = query(tree, node*2+1, (start+end)/2+1, end, left, right);
-
-        return lsum+rsum;
+    static long intervalSum(int start, int end) {
+        return prefixSum(end) - prefixSum(start-1);
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int K = Integer.parseInt(st.nextToken());
-        M += K;
 
-        long[] tmp = new long[N];
-        for(int i=0; i<N; i++) {
-            tmp[i] = Long.parseLong(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+
+        tree = new long[n+1];
+        arr = new long[n+1];
+
+        for(int i=1; i<=n; i++) {
+            long x = Long.parseLong(br.readLine());
+            arr[i] = x;
+            update(i, x);
         }
 
-        int k= 0;
-        while((1<<k) <= N) {
-            k++;
-        }
-        long[] tree = new long[(1<<k)*2];
-        init(tmp, tree, 1,0, N-1);
-
-        while(M-- > 0) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<m+k; i++) {
             st = new StringTokenizer(br.readLine());
-            int what = Integer.parseInt(st.nextToken());
-            if(what==1) {
-                int index = Integer.parseInt(st.nextToken());
-                long val = Long.parseLong(st.nextToken());
-                update(tmp, tree, 1, 0, N-1, index-1, val);
+            int a = Integer.parseInt(st.nextToken());
+
+            if(a==1) {
+                int b = Integer.parseInt(st.nextToken());
+                long c = Long.parseLong(st.nextToken());
+                update(b, c-arr[b]);
+                arr[b] = c;
             } else {
-                int left = Integer.parseInt(st.nextToken());
-                int right = Integer.parseInt(st.nextToken());
-                bw.write(query(tree, 1, 0, N-1, left-1, right-1)+"\n");
+                int b = Integer.parseInt(st.nextToken());
+                int c = Integer.parseInt(st.nextToken());
+                sb.append(intervalSum(b, c)).append("\n");
             }
         }
-        bw.flush();
+        System.out.print(sb);
     }
 }
