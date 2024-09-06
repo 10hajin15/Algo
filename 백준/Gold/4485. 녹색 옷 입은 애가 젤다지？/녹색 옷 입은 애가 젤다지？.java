@@ -39,12 +39,20 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
         int tc = 1;
 
         while(true) {
             N = Integer.parseInt(br.readLine());
-            if(N==0) break;
+            if(N==0) {
+                bw.write(sb.toString());
+                bw.flush();
+                bw.close();
+                br.close();
+                break;
+            }
 
             arr = new Node[N][N];
             ans = Integer.MAX_VALUE;
@@ -61,7 +69,7 @@ public class Main {
             dist = new int[N][N];
             dijkstra();
 
-            System.out.println("Problem "+tc+": "+dist[N-1][N-1]);
+            sb.append("Problem ").append(tc).append(": ").append(dist[N-1][N-1]).append("\n");
             tc++;
         }
     }
