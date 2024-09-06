@@ -14,7 +14,7 @@ public class Main {
             Arrays.fill(dist[i], INF);
         }
 
-        PriorityQueue<Node> pq = new PriorityQueue<>((a, b) -> a.cost-b.cost);
+        PriorityQueue<Node> pq = new PriorityQueue<>();
         pq.offer(arr[0][0]);
         dist[0][0] = arr[0][0].cost;
 
@@ -66,13 +66,18 @@ public class Main {
         }
     }
 
-    static class Node {
+    static class Node implements Comparable<Node> {
         int x, y, cost;
 
         Node(int x, int y, int cost) {
             this.x = x;
             this.y = y;
             this.cost = cost;
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            return this.cost-o.cost;
         }
     }
 }
