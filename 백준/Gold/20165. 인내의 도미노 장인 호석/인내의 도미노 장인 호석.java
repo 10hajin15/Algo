@@ -1,40 +1,30 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
     static int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-    static Map<String, Integer> strDir = new HashMap<>() {{
-        put("E", 0);
-        put("W", 1);
-        put("S", 2);
-        put("N", 3);
-    }};
-
+    static int N, M, R;
+    static int[][] arr;
+    static char[][] ans;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        int R = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        R = Integer.parseInt(st.nextToken());
 
-        int[][] arr = new int[N][M];
+        arr = new int[N][M];
+        ans = new char[N][M];
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
                 arr[i][j] = Integer.parseInt(st.nextToken());
-            }
-        }
-
-        char[][] ans = new char[N][M];
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
                 ans[i][j] = 'S';
             }
         }
@@ -43,45 +33,61 @@ public class Main {
 
         for (int r = 0; r < R; r++) {
             String[] attack = br.readLine().split(" ");
-            String[] defense = br.readLine().split(" ");
+
 
             int ai = Integer.parseInt(attack[0])-1;
             int aj = Integer.parseInt(attack[1])-1;
             String aDir = attack[2];
 
-            int cnt = ans[ai][aj] == 'F' ? 0 : arr[ai][aj] - 1;
-            if(cnt > 0) total += 1;
-            ans[ai][aj] = 'F';
+            if(ans[ai][aj] == 'S') {
+                int dIdx = getDirIndex(aDir);
+                int cnt = arr[ai][aj];
 
-            int ni = ai + dirs[strDir.get(aDir)][0];
-            int nj = aj + dirs[strDir.get(aDir)][1];
+                ans[ai][aj] = 'F';
+                total += 1;
 
-            while(cnt > 0) {
-                if(ni<0 || ni>=N || nj<0 || nj>=M) break;
+                int ni = ai, nj = aj;
 
-                cnt--;
-                if(ans[ni][nj] != 'F' && cnt < arr[ni][nj]-1) cnt = arr[ni][nj]-1;
+                while(cnt > 1) {
+                    ni += dirs[dIdx][0];
+                    nj += dirs[dIdx][1];
 
-                if(ans[ni][nj] == 'S') {
-                    total += 1;
-                    ans[ni][nj] = 'F';
+                    if(ni<0 || ni>=N || nj<0 || nj>=M) break;
+
+                    if(ans[ni][nj] == 'S') {
+                        total += 1;
+                        ans[ni][nj] = 'F';
+                        cnt = Math.max(cnt-1, arr[ni][nj]);
+                    } else {
+                        cnt--;
+                    }
                 }
-
-                ni += dirs[strDir.get(aDir)][0];
-                nj += dirs[strDir.get(aDir)][1];
             }
 
+            String[] defense = br.readLine().split(" ");
             int di = Integer.parseInt(defense[0])-1;
             int dj = Integer.parseInt(defense[1])-1;
             ans[di][dj] = 'S';
         }
 
-        System.out.println(total);
+        sb.append(total).append("\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                System.out.print(ans[i][j]);
+                sb.append(ans[i][j]).append(" ");
             }
-            System.out.println();
+            sb.append("\n");
         }
+
+        System.out.println(sb.toString());
+    }
+
+    private static int getDirIndex(String dir) {
+        switch (dir) {
+            case "E": return 0;
+            case "W": return 1;
+            case "S": return 2;
+            case "N": return 3;
+        }
+        return -1;
     }
 }
