@@ -48,7 +48,6 @@ public class Main {
             int to = Integer.parseInt(st.nextToken());
             int cost = Integer.parseInt(st.nextToken());
             graph[from].add(new Node(to, cost));
-            Collections.sort(graph[from]);
         }
 
         dist = new int[N+1][N+1];
