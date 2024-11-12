@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int R = Integer.parseInt(st.nextToken());
@@ -48,7 +50,8 @@ public class Main {
 
         for(int i=0; i<Q; i++) {
             int q = Integer.parseInt(br.readLine());
-            System.out.println(tree[q]);
+            sb.append(tree[q]).append("\n");
         }
+        System.out.println(sb.toString());
     }
 }
