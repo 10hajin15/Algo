@@ -14,12 +14,12 @@ public class Main {
     static void dfs(int n, int start, boolean[] visited, int[] perm, int totalDist) {
         if(totalDist >= ans) return;
 
-        if(n == size) {
+        if(n == size-1) {
             ans = Math.min(ans, totalDist);
             return;
         }
 
-        for (int i = 1; i < size+1; i++) {
+        for (int i = 1; i < size; i++) {
             if(!visited[i]) {
                 visited[i] = true;
                 perm[n] = i;
@@ -90,14 +90,15 @@ public class Main {
                 }
             }
 
+            dirty.add(0, new int[]{robotX, robotY});
             size = dirty.size();
-            dist = new int[size+1][size+1];
+            dist = new int[size][size];
 
-            for (int i = 0; i < size+1 ; i++) {
-                int[] start = (i==0) ? new int[] {robotX, robotY} : dirty.get(i-1);
-                for (int j = 0; j < size+1; j++) {
+            for (int i = 0; i < size ; i++) {
+                for (int j = 0; j < size; j++) {
                     if(i==j) continue;
-                    int[] target = (j==0) ? new int[] {robotX, robotY} : dirty.get(j-1);
+                    int[] start = dirty.get(i);
+                    int[] target = dirty.get(j);
                     dist[i][j] = bfs(start[0], start[1], target[0], target[1]);
                     if(dist[i][j] == -1) dist[i][j] = Integer.MAX_VALUE;
                 }
@@ -105,7 +106,7 @@ public class Main {
 
             ans = Integer.MAX_VALUE;
 
-            boolean[] visited = new boolean[size+1];
+            boolean[] visited = new boolean[size];
             int[] perm = new int[size];
             dfs(0, 0, visited, perm, 0);
 
