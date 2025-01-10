@@ -1,20 +1,26 @@
 class Solution {
     public int solution(int[] bandage, int health, int[][] attacks) {
-        int answer = 0;
-        
-        int time = 1;
-        int maxHealth = health;
-        for(int[] now: attacks) {
-            int t = now[0] - time;
-            health += ((bandage[1]*t)+(t/bandage[0]*bandage[2]));
-            if(health>=maxHealth) health = maxHealth;
+        int t = bandage[0];
+        int x = bandage[1];
+        int y = bandage[2];
+
+        int time = 0;
+        int h = health;
+        for(int[] attack: attacks) {
+            int now = attack[0];
+            int interval = now-time-1;
+
+            h += x * interval + y * (interval/t);
+
+            if(h > health) h = health;
             
-            health -= now[1];
-            if(health <= 0) break;
-                       
-            time = now[0]+1;
+            h -= attack[1];
+
+            if(h <= 0) return -1;
+
+            time = now;
         }
-        
-        return health<=0? -1: health;
+
+        return h;
     }
 }
