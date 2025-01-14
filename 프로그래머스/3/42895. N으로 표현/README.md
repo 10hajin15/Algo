@@ -1,10 +1,10 @@
 # [level 3] N으로 표현 - 42895 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42895?language=python3) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42895#qna) 
 
 ### 성능 요약
 
-메모리: 11.1 MB, 시간: 17.21 ms
+메모리: 78.1 MB, 시간: 30.46 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2024년 10월 09일 22:01:38
+2025년 01월 14일 09:40:57
 
 ### 문제 설명
 
