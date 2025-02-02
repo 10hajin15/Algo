@@ -6,7 +6,6 @@ public class Main {
     static long[] x, h;
     static boolean[] visited;
     static List<Car> cars;
-    static int[] index;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -19,7 +18,6 @@ public class Main {
         h = new long[N];
         visited = new boolean[N];
         cars = new ArrayList<>();
-        index = new int[N];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
@@ -33,11 +31,6 @@ public class Main {
         for (int i = 0; i < N; i++) {
             cars.add(new Car(i, x[i], h[i]));
         }
-        Collections.sort(cars);
-
-        for (int i = 0; i < N; i++) {
-            index[cars.get(i).num] = i;
-        }
 
         bfs(S);
 
@@ -50,10 +43,10 @@ public class Main {
 
     static void bfs(int start) {
         Queue<Car> q = new LinkedList<>();
-        q.add(cars.get(index[start]));
+        q.add(cars.get(start));
         visited[start] = true;
 
-        int left = index[start], right = index[start];
+        int left = start, right = start;
 
         while (true) {
             if (q.isEmpty()) break;
