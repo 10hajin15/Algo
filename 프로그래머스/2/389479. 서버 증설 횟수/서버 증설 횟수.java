@@ -15,7 +15,7 @@ class Solution {
                 tmp -= cur;
                 cur += tmp;
                 answer += tmp;
-                server[i+k] += (-1 * tmp);
+                server[i+k] -= tmp;
             }
         }
         
