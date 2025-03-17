@@ -24,7 +24,7 @@ public class Main {
                     tomatoes.add(new int[]{ni, nj});
                     arr[ni][nj] = arr[now[0]][now[1]] + 1;
                     cnt -= 1;
-                    if(cnt == 0) return arr[ni][nj]-1;
+                    if(cnt == 0) return arr[now[0]][now[1]];
                 }
             }
         }
