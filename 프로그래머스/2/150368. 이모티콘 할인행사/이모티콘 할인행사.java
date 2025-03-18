@@ -1,8 +1,8 @@
 class Solution {
-    static int N, M;
-    static int count, sum;
-    static int[] emoti;
-    static int[][] uLst;
+    int N, M;
+    int count, sum;
+    int[] emoti;
+    int[][] uLst;
 
     void calc(int[] lst) {
         int tCount = 0;
