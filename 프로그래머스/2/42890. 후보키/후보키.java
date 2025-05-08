@@ -12,7 +12,7 @@ class Solution {
         for (String[] row : relation) {
             StringBuilder sb = new StringBuilder();
             for (int col : cols) {
-                sb.append(row[col]).append(",");
+                sb.append(row[col]).append(" ");
             }
             seen.add(sb.toString());
         }
