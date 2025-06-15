@@ -2,62 +2,71 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static TreeSet<Integer>[] problems;
-    static TreeSet<Integer> infos;
-    static Map<Integer, Integer> levels;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
 
-        problems = new TreeSet[101];
-        for (int i = 1; i < 101; i++) {
-            problems[i] = new TreeSet<>();
-        }
+        Map<Integer, Integer> levels = new HashMap<>();
 
-        levels = new HashMap<>();
-        infos = new TreeSet<>();
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>((a, b) -> {
+            if (a[0] != b[0]) return b[0] - a[0];
+            return b[1] - a[1];
+        });
+
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> {
+            if (a[0] != b[0]) return a[0] - b[0];
+            return a[1] - b[1];
+        });
 
         int N = Integer.parseInt(br.readLine());
         for (int i = 0; i < N; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int P = Integer.parseInt(st.nextToken());
             int L = Integer.parseInt(st.nextToken());
-            problems[L].add(P);
-            infos.add(L);
             levels.put(P, L);
+            maxHeap.add(new int[]{L, P});
+            minHeap.add(new int[]{L, P});
         }
 
         int M = Integer.parseInt(br.readLine());
-        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < M; i++) {
             StringTokenizer st = new StringTokenizer(br.readLine());
-            String query = st.nextToken();
+            String cmd = st.nextToken();
 
-            if(query.equals("add")) {
+            if (cmd.equals("add")) {
                 int P = Integer.parseInt(st.nextToken());
                 int L = Integer.parseInt(st.nextToken());
-                problems[L].add(P);
-                infos.add(L);
                 levels.put(P, L);
-            } else if (query.equals("solved")) {
-                int nums = Integer.parseInt(st.nextToken());
-                int lev = levels.get(nums);
-                problems[lev].remove(nums);
-                if (problems[lev].isEmpty()) {
-                    infos.remove(lev);
-                }
+                maxHeap.add(new int[]{L, P});
+                minHeap.add(new int[]{L, P});
+            } else if (cmd.equals("solved")) {
+                int P = Integer.parseInt(st.nextToken());
+                levels.remove(P);
             } else {
                 int x = Integer.parseInt(st.nextToken());
-                if(x == -1) {
-                    sb.append(problems[infos.first()].first());
+
+                if (x == 1) {
+                    while (!maxHeap.isEmpty()) {
+                        int[] top = maxHeap.peek();
+                        if (levels.containsKey(top[1]) && levels.get(top[1]) == top[0]) {
+                            sb.append(top[1]).append("\n");
+                            break;
+                        }
+                        maxHeap.poll();
+                    }
                 } else {
-                    sb.append(problems[infos.last()].last());
+                    while (!minHeap.isEmpty()) {
+                        int[] top = minHeap.peek();
+                        if (levels.containsKey(top[1]) && levels.get(top[1]) == top[0]) {
+                            sb.append(top[1]).append("\n");
+                            break;
+                        }
+                        minHeap.poll();
+                    }
                 }
-                sb.append("\n");
             }
         }
 
         System.out.println(sb.toString());
     }
-
 }
