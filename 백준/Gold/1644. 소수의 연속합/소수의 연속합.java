@@ -5,22 +5,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-    static boolean isPrime(int n) {
-        if(n <= 1) return false;
-        for(int i=2; i<= Math.sqrt(n); i++) {
-            if(n%i==0) return false;
+    static boolean[] isPrime;
+
+    static void eratosthenes(int n) {
+        for (int i = 2; i <= Math.sqrt(n); i++) {
+            if(isPrime[i]) continue;
+
+            for (int j = i * i; j < n+1; j = j + i) {
+                isPrime[j] = true;
+            }
         }
-        return true;
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
 
+        isPrime = new boolean[N + 1];
+        eratosthenes(N);
+
         List<Integer> lst = new ArrayList<>();
 
-        for (int i = 1; i < N+1; i++) {
-            if(isPrime(i)) lst.add(i);
+        for (int i = 2; i < N+1; i++) {
+            if(!isPrime[i]) lst.add(i);
         }
 
         int answer = 0;
