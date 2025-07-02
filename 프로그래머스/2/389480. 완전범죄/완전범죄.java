@@ -1,46 +1,39 @@
 import java.util.*;
 
 class Solution {
-    static int[][] info;
-    static int n;
-    static int m;
-    static int answer;
-    static Set<String> visited;
-
-    void dfs(int i, int a, int b) {
-        if(i == info.length) {
-            answer = Math.min(answer, a);
+    int[][] infos;
+    int N;
+    int aLimit, bLimit;
+    int answer;
+    Set<String> visited;
+    
+    void dfs(int depth, int a, int b) {
+        if(depth == N) {
+            answer = Math.min(a, answer);
             return;
         }
         
-        String key = i+","+a+","+b;
+        String key = depth+","+a+","+b;
         if(visited.contains(key)) return;
         
-
-        if(info[i][0]+a < n) {
-            dfs(i+1, a+info[i][0], b);
-        }
-        
-        if(info[i][1]+b < m) {
-            dfs(i+1, a, b+info[i][1]);
-        }
+        if(infos[depth][0] + a < aLimit) dfs(depth+1, a+infos[depth][0], b);
+        if(infos[depth][1] + b < bLimit) dfs(depth+1, a, b+infos[depth][1]);
         
         visited.add(key);
     }
     
     public int solution(int[][] info, int n, int m) {
+        infos = info;
         answer = Integer.MAX_VALUE;
-        visited= new HashSet<>();
-        
-        this.info = info;
-        this.n = n;
-        this.m = m;
+        aLimit = n;
+        bLimit = m;
+        N = info.length;
+        visited = new HashSet<>();
         
         dfs(0, 0, 0);
         
-        if(answer == Integer.MAX_VALUE) {
-            answer = -1;
-        }
+        if(answer == Integer.MAX_VALUE) answer = -1;
+        
         return answer;
     }
 }
