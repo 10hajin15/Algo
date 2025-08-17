@@ -36,13 +36,11 @@ class Solution {
         boolean oWin = check(board, 'O');
         boolean xWin = check(board, 'X');
 
-        if (oCnt == 0 && xCnt == 0) return 1;
         if (xCnt > oCnt || oCnt-xCnt > 1) return 0;
         if(oWin && xWin) return 0;
-        if(oWin && oCnt == xCnt+1) return 1;
-        if(xWin && xCnt == oCnt) return 1;
-        if(!oWin && !xWin) return 1;
+        if(oWin && oCnt != xCnt+1) return 0;
+        if(xWin && xCnt != oCnt) return 0;
 
-        return 0;
+        return 1;
     }
 }
